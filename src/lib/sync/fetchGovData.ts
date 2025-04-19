@@ -1,4 +1,3 @@
-import "server-only";
 import { GovRoadConstruction } from "@/types/api";
 
 export async function fetchGovData(): Promise<GovRoadConstruction[]> {
