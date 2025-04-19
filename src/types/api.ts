@@ -1,4 +1,5 @@
 import { Geometry } from "./geometry";
+import { TaichungDistrict } from "@/constant/TaichungDistrict";
 
 export type GovChineseKeys =
   | "申請書編號"
@@ -22,8 +23,8 @@ export type GovChineseKeys =
 export type GovRoadConstruction = Record<GovChineseKeys, string>;
 
 export type DbRoadConstruction = {
-  id: string; // UUID
-  imported_at: number; // Unix timestamp
+  id?: string; // UUID, server generated
+  imported_at?: number; // Unix timestamp, server generated
   application_id: string;
   permit_id: string;
   start_date: string;
@@ -32,7 +33,7 @@ export type DbRoadConstruction = {
   project_name: string;
   case_type: string;
   pipe_type: string;
-  district: string;
+  district: TaichungDistrict;
   location: string;
   is_started: boolean;
   contact_name: string;
@@ -47,20 +48,20 @@ export type DbRoadConstruction = {
 export type ClientRoadConstruction = {
   applicationId: string;
   permitId: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date | null;
+  endDate: Date | null;
   applicantUnit: string;
   projectName: string;
   caseType: string;
   pipeType: string;
-  district: string;
+  district: TaichungDistrict;
   location: string;
   isStarted: boolean;
   contactName: string;
   contactPhone: string;
   contractorName: string;
   contractorPhone: string;
-  longitude: number;
-  latitude: number;
+  lng: number;
+  lat: number;
   geometry: Geometry;
 };
