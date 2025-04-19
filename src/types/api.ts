@@ -20,11 +20,15 @@ export type GovChineseKeys =
   | "經度"
   | "緯度"
   | "施工範圍坐標";
+
 export type GovRoadConstruction = Record<GovChineseKeys, string>;
 
-export type DbRoadConstruction = {
+type DBMetaData = {
   id?: string; // UUID, server generated
   imported_at?: number; // Unix timestamp, server generated
+};
+
+export type DbRoadConstruction = DBMetaData & {
   application_id: string;
   permit_id: string;
   start_date: string;
