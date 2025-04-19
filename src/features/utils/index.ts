@@ -39,20 +39,7 @@ function mapGovToClient(gov: GovRoadConstruction): ClientRoadConstruction {
 }
 
 // Client → DB
-function mapClientToDb(client: ClientRoadConstruction): DbRoadConstruction {
-  return DbRoadConstructionSchema.parse({
-    ...client,
-    // 確保日期轉成 JS Date 型別
-    startDate: client.startDate,
-    endDate: client.endDate,
-  });
-}
+function mapClientToDb(client: ClientRoadConstruction) {}
 
 // DB → Client
-function mapDbToClient(db: DbRoadConstruction): ClientRoadConstruction {
-  return {
-    ...db,
-    startDate: db.startDate.toISOString().slice(0, 10),
-    endDate: db.endDate.toISOString().slice(0, 10),
-  };
-}
+function mapDbToClient(db: DbRoadConstruction) {}
