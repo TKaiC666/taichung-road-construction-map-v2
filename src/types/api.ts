@@ -1,5 +1,5 @@
-import { Geometry } from "./geometry";
-import { TaichungDistrict } from "@/constant/TaichungDistrict";
+import { GeoJSON } from "geojson";
+import { TaichungDistrict } from "@/constant/taichungDistrict";
 
 export type GovChineseKeys =
   | "申請書編號"
@@ -63,5 +63,5 @@ export type ClientRoadConstruction = {
   contractorPhone: string;
   lng: number;
   lat: number;
-  geometry: Geometry;
+  geometry: GeoJSON;
 };
