@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import path from "path";
-import { fetchGovData } from "../lib/sync/fetchGovData";
+import { fetchGovData } from "../features/services/fetchGovData";
 
 const env = process.env.NODE_ENV || "development";
 const envPath = path.resolve(
