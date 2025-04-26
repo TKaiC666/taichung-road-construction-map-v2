@@ -1,4 +1,4 @@
-import { GovRoadConstruction } from "@/types/api";
+import { GovRoadConstruction } from "@/types";
 
 export async function fetchGovData(): Promise<GovRoadConstruction[]> {
   const url = process.env.GOV_API_URL;

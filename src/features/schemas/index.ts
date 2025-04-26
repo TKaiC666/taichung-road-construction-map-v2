@@ -30,9 +30,6 @@ export const ClientRoadConstructionSchema = z.object({
   lat: z.number(),
   geometry: z.unknown() as z.ZodType<GeoJSON, any, GeoJSON>, // 這邊不確定要怎麼定義
 });
-export type ClientRoadConstruction = z.infer<
-  typeof ClientRoadConstructionSchema
->;
 
 /**
  * DbRoadConstruction - 資料庫使用格式（加強型別，例如 date 轉換成 Date）
@@ -58,12 +55,3 @@ export const DbRoadConstructionSchema = z.object({
   latitude: z.number(),
   geometry: z.string(), // GEOJson string
 });
-
-// DB generated meta data
-type DBMetaData = {
-  id?: string; // UUID, server generated
-  imported_at?: number; // Unix timestamp, server generated
-};
-
-export type DbRoadConstruction = DBMetaData &
-  z.infer<typeof DbRoadConstructionSchema>;
