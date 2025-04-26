@@ -1,8 +1,5 @@
-import {
-  GovChineseKeys,
-  DbRoadConstruction,
-  ClientRoadConstruction,
-} from "@/types/api";
+import { GovChineseKeys } from "@/types/api";
+import { DbRoadConstruction, ClientRoadConstruction } from "@/features/schemas";
 
 export type GovKeyEntry = {
   zh: GovChineseKeys; // 繁中 key

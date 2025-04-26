@@ -1,10 +1,6 @@
 import { wktToGeoJSON } from "@terraformer/wkt";
-import {
-  GovRoadConstruction,
-  DbRoadConstruction,
-  ClientRoadConstruction,
-} from "@/types/api";
-import { TaichungDistrict } from "@/constant/taichungDistrict";
+import { GovRoadConstruction } from "@/types/api";
+import { ClientRoadConstruction, DbRoadConstruction } from "@/features/schemas";
 import { parseROCDate, parseBoolean } from "@/utils";
 
 // Gov → Client
@@ -24,7 +20,7 @@ function mapGovToClient(gov: GovRoadConstruction): ClientRoadConstruction {
     applicantUnit: gov["申請單位"],
     caseType: gov["案件類別"],
     pipeType: gov["管線工程類別"],
-    district: gov["區域名稱"] as TaichungDistrict,
+    district: gov["區域名稱"] as ClientRoadConstruction["district"],
     projectName: gov["工程名稱"],
     location: gov["地點"],
     isStarted: parseBoolean(gov["是否開工"]),
