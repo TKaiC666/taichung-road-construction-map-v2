@@ -7,6 +7,11 @@ export type GovKeyEntry = {
   field: keyof ClientRoadConstruction; // Client key
 };
 
+/**
+ * zh: 繁中 key，政府公開資料的 key
+ * dbKey: DB key，資料庫的 key
+ * field: Client key，前後端使用的 key
+ */
 export const govKeyArr: GovKeyEntry[] = [
   { zh: "申請書編號", dbKey: "application_id", field: "applicationId" },
   { zh: "許可證編號", dbKey: "permit_id", field: "permitId" },
