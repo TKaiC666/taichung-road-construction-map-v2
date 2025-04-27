@@ -1,12 +1,7 @@
-import { createClient } from "@supabase/supabase-js";
+import { createSupabaseClient } from "@/lib/supabase";
 import { DbRoadConstruction } from "@/types";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE!
-);
-
-const TABLE_NAME = "dev_road_constructions";
+const TARGET_TABLE = "dev_road_constructions";
 const BATCH_SIZE = 500;
 
 /**
@@ -14,6 +9,7 @@ const BATCH_SIZE = 500;
  * @param data - 要寫入的 DbRoadConstruction 資料陣列
  */
 export async function upsertDataToDb(data: DbRoadConstruction[]) {
+  const supabase = createSupabaseClient();
   if (data.length === 0) {
     console.warn("[dbService] 沒有資料需要同步，略過 upsert");
     return { success: 0, failed: 0 };
@@ -31,12 +27,7 @@ export async function upsertDataToDb(data: DbRoadConstruction[]) {
       `[dbService] Upserting batch ${i / BATCH_SIZE + 1}, ${batch.length} 筆`
     );
 
-    const { error } = await supabase
-      .from("road_construction") // <-- 改成你的表名
-      .upsert(batch, {
-        onConflict: "application_id",
-        ignoreDuplicates: false,
-      });
+    const { error } = await supabase.from(TARGET_TABLE).upsert(batch);
 
     if (error) {
       console.error(
