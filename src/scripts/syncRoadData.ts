@@ -14,12 +14,7 @@ dotenv.config({ path: envPath });
 
 const isDryRun = process.argv.includes("--dry-run"); // 🧹 支援 dry-run 模式
 
-async function syncRoadData() {
-  const rawGovData = await fetchGovData();
-  return rawGovData;
-}
-
-syncRoadData()
+fetchGovData()
   .then((govData) => {
     console.log("[script] start convert data from gov to client");
     return govData;
