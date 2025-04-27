@@ -15,10 +15,14 @@ import { TaichungDistrict } from "@/constant/taichungDistrict";
 function mapGovToClient(gov: GovRoadConstruction): ClientRoadConstruction {
   const result: Partial<ClientRoadConstruction> = {};
   govKeyArr.forEach(({ zh, field }) => {
-    const rawValue = gov[zh]; // 依照 gov 型別，key 為中文
-    if (rawValue === undefined || rawValue === null || rawValue === "") {
-      (result as any)[field] = null; // 將未找到的 key 設為 null
-      return; // 如果沒有值，則跳過這個欄位
+    const rawValue = gov[zh];
+    const isUnavailableValue =
+      rawValue === undefined || rawValue === null || rawValue === "";
+
+    // 如果有無效值，則設為 null
+    if (isUnavailableValue) {
+      (result as any)[field] = null;
+      return; // skip
     }
 
     if (field === "geometry") {
@@ -49,7 +53,6 @@ function mapGovToClient(gov: GovRoadConstruction): ClientRoadConstruction {
     }
   });
 
-  // 驗證轉換結果並拋出錯誤（若格式錯誤）
   const parsedData = ClientRoadConstructionSchema.parse(result);
   return parsedData;
 }
@@ -65,29 +68,38 @@ function mapClientToDb(client: ClientRoadConstruction): DbRoadConstruction {
 
   govKeyArr.forEach(({ dbKey, field }) => {
     const value = client[field as keyof ClientRoadConstruction];
-    if (value !== undefined) {
-      // 處理日期：如果存在，轉成 ISO 字串；否則用預設值（可依情境調整）
-      if (field === "startDate" || field === "endDate") {
+    const isUnavailableValue =
+      value === undefined || value === null || value === "";
+    const isGeometryCoordinatesEmpty =
+      field === "geometry" &&
+      !!value &&
+      (value as GeoJSON.Polygon | GeoJSON.MultiPolygon).coordinates.length ===
+        0;
+
+    // 如果有無效值或 geometry 的 coordinate array 沒有座標，則設為 null
+    if (isUnavailableValue || isGeometryCoordinatesEmpty) {
+      (dbData as any)[dbKey] = null;
+      return; // skip
+    }
+
+    switch (field) {
+      case "startDate":
+      case "endDate":
         (dbData as any)[dbKey] = value
           ? (value as Date).toISOString()
-          : new Date(0).toISOString();
-      }
-      // 處理 geometry：將物件 JSON.stringify 後儲存
-      else if (field === "geometry") {
+          : new Date(0).toISOString(); // 預設值可依情境調整
+        break;
+      case "geometry":
         (dbData as any)[dbKey] = JSON.stringify(value);
-      }
-      // 其他欄位直接賦值（包含 number、boolean、string 等）
-      else {
+        break;
+      default:
         (dbData as any)[dbKey] = value;
-      }
-    } else {
-      console.warn(`Client value not found for field: ${field}`);
+        break;
     }
   });
 
-  // 驗證 DB 格式資料，確保格式正確
-  const parsed = DbRoadConstructionSchema.parse(dbData);
-  return parsed;
+  const parsedData = DbRoadConstructionSchema.parse(dbData);
+  return parsedData;
 }
 
 export function mapClientToDbList(
@@ -96,9 +108,6 @@ export function mapClientToDbList(
   return clientList.map((client) => mapClientToDb(client));
 }
 
-/**
- * (選用) 如果有需要把 DB 轉回 Client 格式，可使用此 function
- */
 export function mapDbToClient(db: DbRoadConstruction): ClientRoadConstruction {
   return {
     applicationId: db.application_id,
