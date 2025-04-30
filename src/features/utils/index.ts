@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { wktToGeoJSON } from "@terraformer/wkt";
 import {
   GovRoadConstruction,
@@ -129,4 +130,17 @@ export function mapDbToClient(db: DbRoadConstruction): ClientRoadConstruction {
     lat: db.latitude,
     geometry: !!db.geometry ? JSON.parse(db.geometry) : null,
   };
+}
+
+export function generateFingerprintV1(
+  data: Pick<ClientRoadConstruction, "applicantUnit" | "permitId">
+): string {
+  if (!data.applicantUnit || !data.permitId) {
+    throw new Error("Missing required fields for fingerprint generation");
+  }
+  const VERSION = "v1";
+  const secret = [VERSION, data.applicantUnit, data.permitId].join("|");
+  const hash = createHash("sha256").update(secret).digest("hex");
+
+  return hash;
 }
